@@ -2,6 +2,7 @@ Vue.js Calendar
 A responsive and interactive calendar application built with Vue.js for task and appointment management.
 
 Features
+
 Interactive Calendar: Monthly view with navigation between months and years
 Task Management: Add, edit, and delete tasks for specific dates
 Drag & Drop: Easily move tasks between dates with drag-and-drop functionality
@@ -12,6 +13,7 @@ Persistence: Tasks are automatically saved to localStorage
 Responsive Design: Works well on desktop and mobile devices
 
 Technical Details
+
 This application is built with:
 
 Vue.js 3: Using the Composition API for state management
