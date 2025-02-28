@@ -1,52 +1,27 @@
 Vue.js Calendar
 
-A responsive and interactive calendar application built with Vue.js for task and appointment management.
+Een eenvoudige en interactieve takenkalender gebouwd met Vue.js.
 
-Features
+Kenmerken
 
-Interactive Calendar: Monthly view with navigation between months and years
+- Maandoverzicht met navigatie tussen maanden
+- Taken toevoegen, bewerken en verwijderen per datum
+- Drag & drop functionaliteit voor het verplaatsen van taken
+- Drie prioriteitsniveaus (hoog, gemiddeld, laag)
+- Gegevens worden opgeslagen in localStorage
+- Responsive ontwerp voor desktop en mobiel
 
-Task Management: Add, edit, and delete tasks for specific dates
+Technologie
 
-Drag & Drop: Easily move tasks between dates with drag-and-drop functionality
+- Vue.js 3 (Composition API)
+- Pinia voor state management
+- Bootstrap 5 voor styling
+- LocalStorage voor gegevenspersistentie
 
-Priority Levels: Organize tasks with three priority levels (High, Medium, Low)
+Gebruik
 
-Visual Indicators: Color-coded dots show task priorities directly on the calendar
-
-Filtering: Filter tasks by priority level
-
-Persistence: Tasks are automatically saved to localStorage
-
-Responsive Design: Works well on desktop and mobile devices
-
-
-Technical Details
-
-This application is built with:
-Vue.js 3: Using the Composition API for state management
-Pinia: State management for task data
-Bootstrap 5: Styling and responsive design
-Bootstrap Icons: Icon support throughout the application
-LocalStorage API: For persistent data storage
-
-Components
-
-CalendarComponent: Main calendar view with month navigation and day cells
-TaskList: List of tasks for the selected date with filtering capabilities
-AddTaskModal: Modal for creating new tasks
-calendarStore: Pinia store for centralized state management
-
-Usage
-Calendar Navigation
-
-Use the arrows to navigate between months
-Click on any date to view, add, or manage tasks for that day
-
-Task Management
-
-Click on a date to view its tasks
-Use the "Nieuwe Taak" button to add new tasks
-Edit or delete tasks using the corresponding icons
-Drag tasks between dates to reschedule them
-Filter tasks by priority using the dropdown selector
+- Navigeer tussen maanden met de pijltjes
+- Klik op een datum om taken te bekijken of toe te voegen
+- Gebruik "Nieuwe Taak" om taken toe te voegen
+- Sleep taken naar andere datums om ze te verplaatsen
+- Filter taken op prioriteit met de dropdown
