@@ -5,13 +5,21 @@ A responsive and interactive calendar application built with Vue.js for task and
 Features
 
 Interactive Calendar: Monthly view with navigation between months and years
+
 Task Management: Add, edit, and delete tasks for specific dates
+
 Drag & Drop: Easily move tasks between dates with drag-and-drop functionality
+
 Priority Levels: Organize tasks with three priority levels (High, Medium, Low)
+
 Visual Indicators: Color-coded dots show task priorities directly on the calendar
+
 Filtering: Filter tasks by priority level
+
 Persistence: Tasks are automatically saved to localStorage
+
 Responsive Design: Works well on desktop and mobile devices
+
 
 Technical Details
 
