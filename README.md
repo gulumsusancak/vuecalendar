@@ -1,4 +1,5 @@
 Vue.js Calendar
+
 A responsive and interactive calendar application built with Vue.js for task and appointment management.
 
 Features
@@ -15,25 +16,17 @@ Responsive Design: Works well on desktop and mobile devices
 Technical Details
 
 This application is built with:
-
 Vue.js 3: Using the Composition API for state management
-
 Pinia: State management for task data
-
 Bootstrap 5: Styling and responsive design
-
 Bootstrap Icons: Icon support throughout the application
-
 LocalStorage API: For persistent data storage
 
 Components
 
 CalendarComponent: Main calendar view with month navigation and day cells
-
 TaskList: List of tasks for the selected date with filtering capabilities
-
 AddTaskModal: Modal for creating new tasks
-
 calendarStore: Pinia store for centralized state management
 
 Usage
