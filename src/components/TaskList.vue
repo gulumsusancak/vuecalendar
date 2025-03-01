@@ -106,6 +106,7 @@
       </div>
     </div>
 
+
     <slot name="actions"></slot>
   </div>
 </template>
@@ -139,6 +140,7 @@ export default {
       priority: 'gemiddeld'
     });
 
+
     // Watch for date changes and reset filter
     watch(
         () => props.selectedDate,
@@ -161,9 +163,9 @@ export default {
       return tasksForDay.value.filter(task => task.priority === selectedPriority.value);
     });
 
-    // Modal handling
+// Modal handling
     const openEditModal = (task) => {
-      editingTask.value = { ...task };
+      editingTask.value = Object.assign({}, task);
       const modal = new Modal(editModal.value);
       modal.show();
     };
@@ -176,7 +178,7 @@ export default {
     };
 
     const handleEditSubmit = () => {
-      emit('edit-task', { ...editingTask.value });
+      emit('edit-task', Object.assign({}, editingTask.value));
       closeEditModal();
     };
 
@@ -251,7 +253,7 @@ export default {
       openEditModal,
       closeEditModal,
       handleEditSubmit,
-      handleDelete
+      handleDelete,
     };
   }
 };

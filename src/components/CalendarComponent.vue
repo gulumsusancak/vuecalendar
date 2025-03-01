@@ -1,7 +1,8 @@
+<!--CalendarComponent.vue-->
 <template>
-  <div class="container" :class="{ 'has-selected-date': selectedDate }" style="max-width: 1000px">
+  <div class="container min-vh-100" style="max-width: 1000px">
     <!-- Calendar Container with dynamic classes -->
-    <div class="calendar-wrapper" :class="{ 'centered': !selectedDate }">
+    <div class="calendar-wrapper mt-5" >
 
       <!-- Month navigation -->
       <div class="d-flex justify-content-around align-items-center py-4 border rounded-top month-title">
@@ -66,9 +67,9 @@
     <!-- Task List with fade transition -->
     <transition name="fade">
       <TaskList
-          v-if="selectedDate"
-          :selected-date="selectedDate"
-          :tasks="tasks"
+          v-if="calendarStore.selectedDate"
+          :selected-date="calendarStore.selectedDate"
+          :tasks="calendarStore.tasks"
           @drag-start="handleDragStart"
           @edit-task="handleEditTask"
           @delete-task="handleDeleteTask"
@@ -89,18 +90,39 @@
 
     <!-- Add Task Modal -->
     <AddTaskModal
-        v-if="showAddTaskModal"
-        :selected-date="selectedDate"
-        @add-task="handleAddTask"
+        v-if="showAddTaskModal && calendarStore.selectedDate"
+        :selected-date="calendarStore.selectedDate"
         @close="showAddTaskModal = false"
     />
+
   </div>
 
+  <!-- Alert container -->
+  <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 5">
+    <div v-for="alert in calendarStore.alerts"
+         :key="alert.id"
+         class="alert alert-dismissible fade show"
+         :class="`alert-${alert.type}`">
+      <!-- Success icon (check) for success alerts -->
+      <i v-if="alert.type === 'success'" class="bi bi-check-circle-fill me-2"></i>
+      <!-- Danger icon (x) for danger alerts -->
+      <i v-if="alert.type === 'danger'" class="bi bi-x-circle-fill me-2"></i>
+      <!-- Info icon (i) for info alerts -->
+      <i v-if="alert.type === 'info'" class="bi bi-info-circle-fill me-2"></i>
+      {{ alert.message }}
+      <button
+          type="button"
+          class="btn-close"
+          @click="calendarStore.alerts = calendarStore.alerts.filter(a => a.id !== alert.id)">
+      </button>
+    </div>
+  </div>
 
 </template>
 
 <script>
 import { computed, reactive, ref, onMounted } from 'vue';
+import { useCalendarStore } from '@/stores/calendarStore';
 import TaskList from './TaskList.vue';
 import AddTaskModal from './AddTaskModal.vue';
 
@@ -111,17 +133,16 @@ export default {
   },
 
   setup() {
+    const calendarStore = useCalendarStore();
+
     const state = reactive({
       year: 2025,
       monthIndex: new Date().getMonth(),
     });
 
-    const tasks = ref([]);
-    const selectedDate = ref(null);
     const showAddTaskModal = ref(false);
     const draggedTask = ref(null);
 
-    // Wijzig de volgorde van de dagen zodat maandag eerst komt
     const dayNames = ['Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za', 'Zo'];
 
     const monthDays = computed(() => {
@@ -148,14 +169,15 @@ export default {
       return days;
     });
 
-    // De rest van je code blijft ongewijzigd
+    // Haal taken op voor een specifieke dag
     const getTasksForDay = (day) => {
       if (!day) return [];
-      return tasks.value.filter(task =>
+      return calendarStore.tasks.filter(task =>
           new Date(task.date).toDateString() === day.toDateString()
       );
     };
 
+    // Sleep- en drop-functionaliteit
     const handleDragStart = (event, task) => {
       draggedTask.value = task;
       event.dataTransfer.setData('text/plain', JSON.stringify(task));
@@ -171,54 +193,38 @@ export default {
       const taskData = event.dataTransfer.getData('text/plain');
       const task = JSON.parse(taskData);
 
-      // Update the task's date
-      const updatedTasks = tasks.value.map(t =>
-          t.id === task.id ? { ...t, date: targetDay } : t
-      );
-
-      tasks.value = updatedTasks;
-
-      // Save to localStorage
-      localStorage.setItem('calendar-tasks', JSON.stringify(tasks.value));
+      // Update de taakdatum in de store
+      const updatedTask = Object.assign({}, task, { date: targetDay });
+      calendarStore.editTask(updatedTask);
     };
 
+    // Klik op een dag om taken te zien
     const handleDayClick = (day) => {
-      selectedDate.value = day;
+      calendarStore.setSelectedDate(day);
     };
 
+    // Voeg een nieuwe taak toe via de store
     const handleAddTask = (newTask) => {
-      tasks.value.push(newTask);
-      // Save to localStorage
-      localStorage.setItem('calendar-tasks', JSON.stringify(tasks.value));
+      calendarStore.addTask(newTask);
       showAddTaskModal.value = false;
+
+      // Add this line to show a success alert
+      calendarStore.showAlert(`De taak "${newTask.title}" is toegevoegd`, 'success');
     };
 
+    // Bewerk een taak via de store
     const handleEditTask = (updatedTask) => {
-      // Update de taak in de tasks array
-      const taskIndex = tasks.value.findIndex(t => t.id === updatedTask.id);
-      if (taskIndex !== -1) {
-        tasks.value[taskIndex] = {
-          ...updatedTask,
-          date: new Date(updatedTask.date) // Behoud de originele datum
-        };
-        // Update localStorage
-        localStorage.setItem('calendar-tasks', JSON.stringify(tasks.value));
-      }
+      calendarStore.editTask(updatedTask);
     };
 
+    // Verwijder een taak via de store
     const handleDeleteTask = (taskToDelete) => {
-      // Filter out the task to delete
-      tasks.value = tasks.value.filter(task => task.id !== taskToDelete.id);
-      // Update localStorage
-      localStorage.setItem('calendar-tasks', JSON.stringify(tasks.value));
+      calendarStore.deleteTask(taskToDelete);
     };
 
-
+    // Laad taken uit localStorage bij het mounten
     onMounted(() => {
-      // Load tasks from localStorage on mount
-      if (localStorage.getItem('calendar-tasks')) {
-        tasks.value = JSON.parse(localStorage.getItem('calendar-tasks'));
-      }
+      calendarStore.loadTasksFromLocalStorage();
     });
 
     return {
@@ -229,8 +235,7 @@ export default {
       year: computed(() => state.year),
       monthDays,
       dayNames,
-      selectedDate,
-      tasks,
+      calendarStore,
       showAddTaskModal,
       handleDayClick,
       handleAddTask,
@@ -273,7 +278,6 @@ export default {
   font-family: 'Montserrat', sans-serif;
 }
 .container {
-  min-height: 100vh;
   transition: padding-top 0.7s ease-in-out;
 }
 
@@ -283,11 +287,7 @@ export default {
 
 .calendar-wrapper {
   transition: transform 0.7s ease-in-out;
-  transform: translateY(0);
-}
 
-.calendar-wrapper.centered {
-  transform: translateY(calc(20vh - 2rem));
 }
 
 .calendar-container {

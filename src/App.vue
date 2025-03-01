@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="min-vh-100 h-auto pb-5" style="background: linear-gradient(160deg, #b3daff, #ffdde1);">
+  <div id="app" class="d-flex align-items-center pb-5" style="background: linear-gradient(160deg, #b3daff, #ffdde1);">
     <CalendarComponent />
   </div>
 </template>

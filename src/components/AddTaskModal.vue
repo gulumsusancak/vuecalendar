@@ -64,6 +64,7 @@
 
 <script>
 import { reactive, ref } from 'vue';
+import { useCalendarStore } from '@/stores/calendarStore'; // Importeer de store
 
 export default {
   name: 'AddTaskModal',
@@ -73,12 +74,10 @@ export default {
       required: true
     }
   },
-
-  emits: ['add-task', 'close'],
-
+  emits: ['close'], // Alleen het 'close' event is nodig
   setup(props, { emit }) {
+    const calendarStore = useCalendarStore(); // Gebruik de store
     const showModal = ref(true);
-
     const taskForm = reactive({
       title: '',
       description: '',
@@ -86,11 +85,14 @@ export default {
     });
 
     const handleSubmit = () => {
-      emit('add-task', {
+      console.log('taak toegevoegd:')
+      // Voeg de nieuwe taak toe via de store
+      calendarStore.addTask({
         ...taskForm,
-        id: Date.now(),
-        date: props.selectedDate
+        id: Date.now(), // Genereer een unieke ID
+        date: props.selectedDate // Gebruik de geselecteerde datum
       });
+
       closeModal();
     };
 
@@ -108,10 +110,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-/* Only needed if you want to customize the backdrop */
-.modal-backdrop {
-  z-index: 1040; /* Bootstrap default is 1040 */
-}
-</style>
