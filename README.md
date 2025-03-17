@@ -20,6 +20,7 @@ Technologie
 
 Gebruik
 
+- Start de app met "npm install" en "npm run serve"
 - Navigeer tussen maanden met de pijltjes
 - Klik op een datum om taken te bekijken of toe te voegen
 - Gebruik "Nieuwe Taak" om taken toe te voegen
