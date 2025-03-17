@@ -82,7 +82,7 @@
               @click="showAddTaskModal = true"
           >
             Nieuwe Taak
-            <i class="bi-plus"></i>
+            <i class="ms-2 bi bi-calendar-plus"></i>
           </button>
         </template>
       </TaskList>
@@ -96,6 +96,9 @@
     />
 
   </div>
+
+  <!-- Watermerk -->
+  <div class="position-fixed bottom-0 end-0 p-2 text-muted fst-italic opacity-75">Ontwikkeld door Gülümsu Sancak</div>
 
   <!-- Alert container -->
   <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 5">
@@ -156,7 +159,7 @@ export default {
       // Als het zondag is (0), maak er 6 van, anders trek 1 af
       firstDayOfMonth = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1;
 
-      // Voeg dagen van de vorige maand toe in plaats van null
+      // Voeg dagen van de vorige maand toe
       if (firstDayOfMonth > 0) {
         const prevMonthLastDate = new Date(state.year, state.monthIndex, 0);
         const prevMonthDays = prevMonthLastDate.getDate();
@@ -216,9 +219,6 @@ export default {
     const handleAddTask = (newTask) => {
       calendarStore.addTask(newTask);
       showAddTaskModal.value = false;
-
-      // Add this line to show a success alert
-      calendarStore.showAlert(`De taak "${newTask.title}" is toegevoegd`, 'success');
     };
 
     // Bewerk een taak via de store
@@ -254,7 +254,7 @@ export default {
       handleDragStart,
       handleDragOver,
       handleDrop,
-      state, // Toevoegen om toegang te krijgen tot state.monthIndex in de template
+      state, // om toegang te krijgen tot state.monthIndex in de template
       isToday: (day) => {
         const today = new Date();
         return day &&
@@ -413,11 +413,11 @@ export default {
 }
 
 /* For showing "..." when there are many tasks */
-.task-indicators:has(> .task-dot:nth-child(4)) {
+.task-indicators:has(> .task-dot:nth-child(10)) {
   padding-right: 12px;
 }
 
-.task-indicators:has(> .task-dot:nth-child(4))::after {
+.task-indicators:has(> .task-dot:nth-child(10))::after {
   content: "...";
   position: absolute;
   right: 2px;
@@ -456,4 +456,6 @@ export default {
 .task-dot:active {
   cursor: grabbing;
 }
+
+
 </style>
