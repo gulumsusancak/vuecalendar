@@ -74,9 +74,9 @@ export default {
       required: true
     }
   },
-  emits: ['close'], // Alleen het 'close' event is nodig
+  emits: ['close'], // alleen close event is nodig
   setup(props, { emit }) {
-    const calendarStore = useCalendarStore(); // Gebruik de store
+    const calendarStore = useCalendarStore(); // gebruik de store
     const showModal = ref(true);
     const taskForm = reactive({
       title: '',
@@ -85,11 +85,11 @@ export default {
     });
 
     const handleSubmit = () => {
-      // Voeg de nieuwe taak toe via de store
+      // voeg de nieuwe taak toe via de store
       calendarStore.addTask({
         ...taskForm,
-        id: Date.now(), // Genereer een unieke ID
-        date: props.selectedDate // Gebruik de geselecteerde datum
+        id: Date.now(), // genereer een unieke ID
+        date: props.selectedDate // gebruik de geselecteerde datum
       });
 
       closeModal();

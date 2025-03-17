@@ -135,9 +135,11 @@ export default {
     AddTaskModal
   },
 
+//composition API met setup functie
   setup() {
-    const calendarStore = useCalendarStore();
+    const calendarStore = useCalendarStore(); //pinia
 
+// reactieve state met reactive
     const state = reactive({
       year: 2025,
       monthIndex: new Date().getMonth(),
@@ -148,18 +150,19 @@ export default {
 
     const dayNames = ['Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za', 'Zo'];
 
+  // computed property voor kalenderberekening
     const monthDays = computed(() => {
       let days = [];
       const date = new Date(state.year, state.monthIndex, 1);
 
-      // Bereken de dag van de week (0-6, waarbij 0 zondag is)
+      // bereken de dag van de week (0-6, waarbij 0 zondag is)
       let firstDayOfMonth = date.getDay();
 
-      // Converteer van zondag=0 naar maandag=0 formaat
-      // Als het zondag is (0), maak er 6 van, anders trek 1 af
+      // converteer van zondag=0 naar maandag=0 formaat
+      // als het zondag is (0), maak er 6 van, anders trek 1 af
       firstDayOfMonth = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1;
 
-      // Voeg dagen van de vorige maand toe
+      // voeg dagen van de vorige maand toe
       if (firstDayOfMonth > 0) {
         const prevMonthLastDate = new Date(state.year, state.monthIndex, 0);
         const prevMonthDays = prevMonthLastDate.getDate();
@@ -171,17 +174,17 @@ export default {
           days.push(new Date(prevMonthYear, prevMonth, day));
         }
       }
-
+      // bereken het aantal dagen in de huidige maand
       const daysInMonth = new Date(state.year, state.monthIndex + 1, 0).getDate();
 
+      // voeg alle dagen van de huidige maand toe
       for (let i = 1; i <= daysInMonth; i++) {
         days.push(new Date(state.year, state.monthIndex, i));
       }
-
       return days;
     });
 
-    // Haal taken op voor een specifieke dag
+    // met pinia store taken ophalen
     const getTasksForDay = (day) => {
       if (!day) return [];
       return calendarStore.tasks.filter(task =>
@@ -189,7 +192,7 @@ export default {
       );
     };
 
-    // Drag en drop functionaliteit
+    // drag en drop functionaliteit
     const handleDragStart = (event, task) => {
       draggedTask.value = task;
       event.dataTransfer.setData('text/plain', JSON.stringify(task));
@@ -199,9 +202,9 @@ export default {
       event.preventDefault();
     };
 
+    // pinia store actie aanroepen om taak te bewerken na drop
     const handleDrop = (event, targetDay) => {
       if (!targetDay) return;
-
       const taskData = event.dataTransfer.getData('text/plain');
       const task = JSON.parse(taskData);
 
@@ -210,33 +213,34 @@ export default {
       calendarStore.editTask(updatedTask);
     };
 
-    // Klik op een dag om taken te zien
+    // pinia voor geselecteerde datum
     const handleDayClick = (day) => {
       calendarStore.setSelectedDate(day);
     };
 
-    // Voeg een nieuwe taak toe via de store
+    // voeg een nieuwe taak toe via de store
     const handleAddTask = (newTask) => {
       calendarStore.addTask(newTask);
       showAddTaskModal.value = false;
     };
 
-    // Bewerk een taak via de store
+    // bewerk een taak via de store
     const handleEditTask = (updatedTask) => {
       calendarStore.editTask(updatedTask);
     };
 
-    // Verwijder een taak via de store
+    // verwijder een taak via de store
     const handleDeleteTask = (taskToDelete) => {
       calendarStore.deleteTask(taskToDelete);
     };
 
-    // Laad taken uit localStorage bij het mounten
+    // laad taken uit localStorage bij het mounten
     onMounted(() => {
       calendarStore.loadTasksFromLocalStorage();
     });
 
     return {
+      // computed properties
       monthName: computed(() => {
         const date = new Date(state.year, state.monthIndex);
         return date.toLocaleString('nl-NL', { month: 'long' });
@@ -254,7 +258,8 @@ export default {
       handleDragStart,
       handleDragOver,
       handleDrop,
-      state, // om toegang te krijgen tot state.monthIndex in de template
+      state,
+      //helper functies
       isToday: (day) => {
         const today = new Date();
         return day &&

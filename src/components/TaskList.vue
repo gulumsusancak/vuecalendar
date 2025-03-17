@@ -18,6 +18,7 @@
       {{ selectedPriority === 'all' ? 'Geen taken voor deze dag' : 'Geen taken gevonden voor deze prioriteit' }}
     </div>
 
+    <!-- lijst van taken met drag & drop functionaliteit -->
     <div
         v-for="task in filteredTasks"
         :key="task.id"
@@ -55,7 +56,7 @@
       </div>
     </div>
 
-    <!-- Edit Modal -->
+    <!-- edit modal -->
     <div class="modal fade" id="editTaskModal" tabindex="-1" ref="editModal">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -117,6 +118,7 @@ import { Modal } from 'bootstrap';
 
 export default {
   name: 'TaskList',
+  // component props voor data vanuit parent component
   props: {
     selectedDate: {
       type: Date,
@@ -127,10 +129,12 @@ export default {
       default: () => []
     }
   },
-
+// event emits voor communicatie naar parent component
   emits: ['drag-start', 'edit-task', 'delete-task'],
 
+  // composition API setup functie
   setup(props, { emit }) {
+    // reactieve state met ref
     const selectedPriority = ref('all');
     const editModal = ref(null);
     const editingTask = ref({
@@ -141,7 +145,7 @@ export default {
     });
 
 
-    // Watch for date changes and reset filter
+    // watch voor date veranderingen en filter resetten
     watch(
         () => props.selectedDate,
         () => {
@@ -149,6 +153,8 @@ export default {
         }
     );
 
+    // computed properties voor afgeleide data
+    // bepaal taken voor de geselecteerde dag
     const tasksForDay = computed(() => {
       return props.tasks.filter(task => {
         const taskDate = new Date(task.date);
@@ -156,6 +162,8 @@ export default {
       });
     });
 
+    // computed property afhankelijk van andere state (selectedPriority en tasksForDay)
+    // gefilterde taken op basis van prioriteit
     const filteredTasks = computed(() => {
       if (selectedPriority.value === 'all') {
         return tasksForDay.value;
@@ -163,13 +171,12 @@ export default {
       return tasksForDay.value.filter(task => task.priority === selectedPriority.value);
     });
 
-// Modal handling
+// Modal
     const openEditModal = (task) => {
       editingTask.value = Object.assign({}, task);
       const modal = new Modal(editModal.value);
       modal.show();
     };
-
     const closeEditModal = () => {
       const modal = Modal.getInstance(editModal.value);
       if (modal) {
@@ -177,19 +184,22 @@ export default {
       }
     };
 
+    // event emitters voor communicatie met parent
     const handleEditSubmit = () => {
+      // emit event naar parent met bijgewerkte taak
       emit('edit-task', Object.assign({}, editingTask.value));
       closeEditModal();
     };
 
     const handleDelete = (task) => {
       if (window.confirm(`Wil je de taak "${task.title}" verwijderen?`)) {
+        // emit event naar parent voor taak verwijdering
         emit('delete-task', task);
       }
     };
 
 
-    // Bootstrap class helpers
+    // bootstrap classes op basis van prioriteit
     const getTaskClasses = (priority) => {
       const classes = {
         'hoog': 'bg-danger-subtle border-danger-subtle shadow-sm',
@@ -235,7 +245,9 @@ export default {
       });
     };
 
+    // drag en drop event handler
     const handleDragStart = (event, task) => {
+      // stuur event en taak door naar parent component
       emit('drag-start', event, task);
     };
 

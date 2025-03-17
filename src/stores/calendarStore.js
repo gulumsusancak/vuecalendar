@@ -1,7 +1,9 @@
-// calendarStore.js
+//calendarStore.js
 import { defineStore } from 'pinia';
 
+// calendar is de unieke id voor deze store
 export const useCalendarStore = defineStore('calendar', {
+    // alle reactive data van de applicatie
     state: () => ({
         tasks: [],
         selectedDate: null,
@@ -12,11 +14,14 @@ export const useCalendarStore = defineStore('calendar', {
         alertId: 0
     }),
 
+    // methodes om de state te wijzigen
     actions: {
         addTask(newTask) {
+            // update van de tasks array
             this.tasks = this.tasks.concat(newTask);
+            // sla op in localStorage
             this.saveTasksToLocalStorage();
-            // Show success alert when adding task
+            // alert
             this.showAlert(`De taak "${newTask.title}" is toegevoegd`, 'success');
             return newTask;
         },
@@ -24,22 +29,27 @@ export const useCalendarStore = defineStore('calendar', {
         editTask(updatedTask) {
             const index = this.tasks.findIndex(task => task.id === updatedTask.id);
             if (index !== -1) {
+                // update van de tasks array met de bijgewerkte taak
                 this.tasks = this.tasks.slice(0, index)
                     .concat([updatedTask])
                     .concat(this.tasks.slice(index + 1));
+                // sla op in localStorage
                 this.saveTasksToLocalStorage();
-                // Show info alert when editing task
+                // alert
                 this.showAlert(`De taak "${updatedTask.title}" is bijgewerkt`, 'info');
             }
         },
 
         deleteTask(taskToDelete) {
+            // filter de te verwijderen taak uit de array
             this.tasks = this.tasks.filter(task => task.id !== taskToDelete.id);
+            // sla op in localStorage
             this.saveTasksToLocalStorage();
-            // Show danger alert when deleting task
+            // alert
             this.showAlert(`De taak "${taskToDelete.title}" is verwijderd`, 'danger');
         },
 
+        // persistentie in localStorage
         saveTasksToLocalStorage() {
             try {
                 localStorage.setItem('calendar-tasks', JSON.stringify(this.tasks));
@@ -48,6 +58,7 @@ export const useCalendarStore = defineStore('calendar', {
             }
         },
 
+        // data laden uit localStorage
         loadTasksFromLocalStorage() {
             try {
                 const storedTasks = localStorage.getItem('calendar-tasks');
@@ -60,14 +71,17 @@ export const useCalendarStore = defineStore('calendar', {
             }
         },
 
+        // geselecteerde datum instellen
         setSelectedDate(date) {
             this.selectedDate = date;
         },
 
+        // filter voor prioriteit instellen
         setPriorityFilter(priority) {
             this.filters.priority = priority;
         },
 
+        //alerts tonen voor 10s
         showAlert(message, type = 'success') {
             const id = this.alertId++;
             this.alerts.push({ id, message, type });
@@ -79,6 +93,7 @@ export const useCalendarStore = defineStore('calendar', {
     },
 
     getters: {
+        // gefilterde taken ophalen op basis van datum en prioriteit
         getFilteredTasks: (state) => (date) => {
             if (!date) return [];
 
