@@ -35,7 +35,7 @@
               :key="index"
               class="calendar-cell text-center position-relative"
               :class="{
-                'text-muted': !day,
+                'text-muted': day.getMonth() !== state.monthIndex,
                 'today': isToday(day),
                 'hover-effect': day,
                 'droppable': day
@@ -43,12 +43,12 @@
               @dragover.prevent="handleDragOver"
               @drop.prevent="(event) => handleDrop(event, day)"
               @dragenter.prevent
-              @click="day && handleDayClick(day)"
+              @click="handleDayClick(day)"
           >
-            <span class="day-number">{{ day ? day.getDate() : '' }}</span>
+            <span class="day-number">{{ day.getDate() }}</span>
 
             <!-- Task indicators -->
-            <div v-if="day" class="task-indicators">
+            <div class="task-indicators">
               <div
                   v-for="task in getTasksForDay(day)"
                   :key="task.id"
@@ -156,11 +156,20 @@ export default {
       // Als het zondag is (0), maak er 6 van, anders trek 1 af
       firstDayOfMonth = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1;
 
-      const daysInMonth = new Date(state.year, state.monthIndex + 1, 0).getDate();
+      // Voeg dagen van de vorige maand toe in plaats van null
+      if (firstDayOfMonth > 0) {
+        const prevMonthLastDate = new Date(state.year, state.monthIndex, 0);
+        const prevMonthDays = prevMonthLastDate.getDate();
 
-      for (let i = 0; i < firstDayOfMonth; i++) {
-        days.push(null);
+        for (let i = 0; i < firstDayOfMonth; i++) {
+          const day = prevMonthDays - firstDayOfMonth + i + 1;
+          const prevMonthYear = state.monthIndex === 0 ? state.year - 1 : state.year;
+          const prevMonth = state.monthIndex === 0 ? 11 : state.monthIndex - 1;
+          days.push(new Date(prevMonthYear, prevMonth, day));
+        }
       }
+
+      const daysInMonth = new Date(state.year, state.monthIndex + 1, 0).getDate();
 
       for (let i = 1; i <= daysInMonth; i++) {
         days.push(new Date(state.year, state.monthIndex, i));
@@ -245,6 +254,7 @@ export default {
       handleDragStart,
       handleDragOver,
       handleDrop,
+      state, // Toevoegen om toegang te krijgen tot state.monthIndex in de template
       isToday: (day) => {
         const today = new Date();
         return day &&
@@ -447,4 +457,3 @@ export default {
   cursor: grabbing;
 }
 </style>
-
