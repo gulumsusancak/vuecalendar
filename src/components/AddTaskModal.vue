@@ -85,7 +85,6 @@ export default {
     });
 
     const handleSubmit = () => {
-      console.log('taak toegevoegd:')
       // Voeg de nieuwe taak toe via de store
       calendarStore.addTask({
         ...taskForm,

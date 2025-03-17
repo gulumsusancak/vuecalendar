@@ -177,7 +177,7 @@ export default {
       );
     };
 
-    // Sleep- en drop-functionaliteit
+    // Drag en drop functionaliteit
     const handleDragStart = (event, task) => {
       draggedTask.value = task;
       event.dataTransfer.setData('text/plain', JSON.stringify(task));
@@ -193,7 +193,7 @@ export default {
       const taskData = event.dataTransfer.getData('text/plain');
       const task = JSON.parse(taskData);
 
-      // Update de taakdatum in de store
+      // Update de taak datum in de store
       const updatedTask = Object.assign({}, task, { date: targetDay });
       calendarStore.editTask(updatedTask);
     };

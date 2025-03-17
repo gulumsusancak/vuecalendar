@@ -8,25 +8,22 @@ export const useCalendarStore = defineStore('calendar', {
         filters: {
             priority: 'all',
         },
-        // Added alert-related state
         alerts: [],
         alertId: 0
     }),
 
     actions: {
         addTask(newTask) {
-            // Using concat instead of spread operator
             this.tasks = this.tasks.concat(newTask);
             this.saveTasksToLocalStorage();
             // Show success alert when adding task
             this.showAlert(`De taak "${newTask.title}" is toegevoegd`, 'success');
-            return newTask; // Return de nieuwe taak voor confirmatie
+            return newTask;
         },
 
         editTask(updatedTask) {
             const index = this.tasks.findIndex(task => task.id === updatedTask.id);
             if (index !== -1) {
-                // Update the array with a new copy for reactivity
                 this.tasks = this.tasks.slice(0, index)
                     .concat([updatedTask])
                     .concat(this.tasks.slice(index + 1));
@@ -71,7 +68,6 @@ export const useCalendarStore = defineStore('calendar', {
             this.filters.priority = priority;
         },
 
-        // Added alert system action
         showAlert(message, type = 'success') {
             const id = this.alertId++;
             this.alerts.push({ id, message, type });
