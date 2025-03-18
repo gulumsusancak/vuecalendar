@@ -1,6 +1,6 @@
 <!--AddTaskModal.vue-->
 <template>
-  <!-- Bootstrap Modal Structure -->
+  <!-- Bootstrap Modal -->
   <div class="modal fade" :class="{ show: showModal }" :style="{ display: showModal ? 'block' : 'none' }">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">

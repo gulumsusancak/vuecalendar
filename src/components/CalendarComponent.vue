@@ -4,7 +4,7 @@
     <!-- Calendar Container with dynamic classes -->
     <div class="calendar-wrapper mt-5" >
 
-      <!-- Month navigation -->
+      <!-- maand weergave en navigatie -->
       <div class="d-flex justify-content-around align-items-center py-4 border rounded-top month-title">
         <button @click="prevMonth" class="btn btn-outline-light rounded-circle d-flex align-items-center justify-content-center navigation-btn">
           <i class="bi bi-chevron-left"></i>
@@ -17,7 +17,7 @@
         </button>
       </div>
 
-      <!-- Calendar display -->
+      <!-- kalender weergave -->
       <div class="calendar-container p-3 bg-white">
         <div class="calendar-grid">
           <!-- Week days -->
@@ -29,7 +29,7 @@
             {{ day }}
           </div>
 
-          <!-- Month days -->
+          <!-- dagen van de maand -->
           <div
               v-for="(day, index) in monthDays"
               :key="index"
@@ -47,7 +47,7 @@
           >
             <span class="day-number">{{ day.getDate() }}</span>
 
-            <!-- Task indicators -->
+            <!-- task indicators -->
             <div class="task-indicators">
               <div
                   v-for="task in getTasksForDay(day)"
@@ -64,8 +64,7 @@
       </div>
     </div>
 
-    <!-- Task List with fade transition -->
-    <transition name="fade">
+    <!-- takenlijst -->
       <TaskList
           v-if="calendarStore.selectedDate"
           :selected-date="calendarStore.selectedDate"
@@ -86,7 +85,6 @@
           </button>
         </template>
       </TaskList>
-    </transition>
 
     <!-- Add Task Modal -->
     <AddTaskModal
